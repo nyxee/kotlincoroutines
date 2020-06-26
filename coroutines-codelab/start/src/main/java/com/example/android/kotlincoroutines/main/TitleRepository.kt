@@ -63,13 +63,11 @@ class TitleRepository(val network: MainNetwork, val titleDao: TitleDao) {
                     titleRefreshCallback.onCompleted()
                 } else {
                     // If it's not successful, inform the callback of the error
-                    titleRefreshCallback.onError(
-                            TitleRefreshError("Unable to refresh title", null))
+                    titleRefreshCallback.onError(TitleRefreshError("Unable to refresh title", null))
                 }
             } catch (cause: Throwable) {
                 // If anything throws an exception, inform the caller
-                titleRefreshCallback.onError(
-                        TitleRefreshError("Unable to refresh title", cause))
+                titleRefreshCallback.onError(TitleRefreshError("Unable to refresh title", cause))
             }
         }
     }
