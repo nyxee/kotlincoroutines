@@ -19,7 +19,9 @@ package com.example.android.kotlincoroutines.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.android.kotlincoroutines.util.BACKGROUND
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 /**
  * TitleRepository provides an interface to fetch a title or request a new one be generated.
@@ -42,42 +44,34 @@ class TitleRepository(val networkService: IMainNetworkService, val titleDao: ITi
      */
     val title: LiveData<String?> = titleDao.titleLiveData.map { it?.title }
 
-
-    // TODO: Add coroutines-based `fun refreshTitle` here
-
     /**
      * Refresh the current title and save the results to the offline cache.
      *
      * This method does not return the new title. Use [TitleRepository.title] to observe
      * the current tile.
      */
-    fun refreshTitleWithCallbacks(titleRefreshCallback: ITitleRefreshCallback) {
-        // This request will be run on a background thread by retrofit
-        BACKGROUND.submit {
-            try {
-                // Make networkService request using a blocking call
-                val result = networkService.fetchNextTitle().execute()
-                if (result.isSuccessful) {
-                    // Save it to database
-                    titleDao.insertTitle(Title(result.body()!!))
-                    // Inform the caller the refresh is completed
-                    titleRefreshCallback.onCompleted()
-                } else {
-                    // If it's not successful, inform the callback of the error
-                    titleRefreshCallback.onError(TitleRefreshError("Unable to refresh title", null))
-                }
-
-            } catch (cause: Throwable) {
-                // If anything throws an exception, inform the caller
-                titleRefreshCallback.onError(TitleRefreshError("Unable to refresh title", cause))
-            }
-        }
-    }
-
     //When you're done with this codelab, you will update this to use Retrofit and Room to fetch a new title and write it to the database using coroutines. For now, it'll just spend 500 milliseconds pretending to do work and then continue.
     suspend fun refreshTitle() {
         // TODO: Refresh from networkService and write to database
         delay(500)
+        // interact with *blocking* network and IO calls from a coroutine
+        withContext(Dispatchers.IO) {
+            val result = try {
+                // Make network request using a blocking call
+                networkService.fetchNextTitle().execute()
+            } catch (cause: Throwable) {
+                // If the network throws an exception, inform the caller
+                throw TitleRefreshError("Unable to refresh title", cause)
+            }
+
+            if (result.isSuccessful) {
+                // Save it to database
+                titleDao.insertTitle(Title(result.body()!!))
+            } else {
+                // If it's not successful, inform the callback of the error
+                throw TitleRefreshError("Unable to refresh title", null)
+            }
+        }
     }
 }
 
