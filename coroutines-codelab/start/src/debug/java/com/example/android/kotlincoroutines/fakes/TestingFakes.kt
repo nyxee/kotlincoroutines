@@ -18,7 +18,7 @@ package com.example.android.kotlincoroutines.fakes
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.kotlincoroutines.main.IMainNetwork
+import com.example.android.kotlincoroutines.main.IMainNetworkService
 import com.example.android.kotlincoroutines.main.Title
 import com.example.android.kotlincoroutines.main.ITitleDao
 import kotlinx.coroutines.CompletableDeferred
@@ -89,16 +89,16 @@ class ITitleDaoFake(initialTitle: String) : ITitleDao {
 }
 
 /**
- * Testing Fake implementation of IMainNetwork
+ * Testing Fake implementation of IMainNetworkService
  */
-class IMainNetworkFake(var result: String) : IMainNetwork {
+class IMainNetworkServiceFake(var result: String) : IMainNetworkService {
     override fun fetchNextTitle() = MakeCompilerHappyForStarterCode() // TODO: replace with `result`
 }
 
 /**
- * Testing Fake for IMainNetwork that lets you complete or error all current requests
+ * Testing Fake for IMainNetworkService that lets you complete or error all current requests
  */
-class MainNetworkCompletableFake() : IMainNetwork {
+class MainNetworkServiceCompletableFake() : IMainNetworkService {
     private var completable = CompletableDeferred<String>()
 
     override fun fetchNextTitle() = MakeCompilerHappyForStarterCode() // TODO: replace with `completable.await()`

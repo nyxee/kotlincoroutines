@@ -31,7 +31,7 @@ private val FAKE_RESULTS = listOf(
 )
 
 /**
- * This class will return fake [Response] objects to Retrofit, without actually using the network.
+ * This class will return fake [Response] objects to Retrofit, without actually using the networkService.
  */
 class SkipNetworkInterceptor: Interceptor {
     private var lastResult: String = ""
@@ -45,7 +45,7 @@ class SkipNetworkInterceptor: Interceptor {
     private fun wantRandomError() = attempts++ % 5 == 0
 
     /**
-     * Stop the request from actually going out to the network.
+     * Stop the request from actually going out to the networkService.
      */
     override fun intercept(chain: Interceptor.Chain): Response {
         pretendToBlockForNetworkRequest()
@@ -57,7 +57,7 @@ class SkipNetworkInterceptor: Interceptor {
     }
 
     /**
-     * Pretend to "block" interacting with the network.
+     * Pretend to "block" interacting with the networkService.
      *
      * Really: sleep for 500ms.
      */

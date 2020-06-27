@@ -27,9 +27,9 @@ import kotlinx.coroutines.delay
  * Repository modules handle data operations. They provide a clean API so that the rest of the app
  * can retrieve this data easily. They know where to get the data from and what API calls to make
  * when data is updated. You can consider repositories to be mediators between different data
- * sources, in our case it mediates between a network API and an offline database cache.
+ * sources, in our case it mediates between a networkService API and an offline database cache.
  */
-class TitleRepository(val network: IMainNetwork, val titleDao: ITitleDao) {
+class TitleRepository(val networkService: IMainNetworkService, val titleDao: ITitleDao) {
 
     /**
      * [LiveData] to load title.
@@ -55,8 +55,8 @@ class TitleRepository(val network: IMainNetwork, val titleDao: ITitleDao) {
         // This request will be run on a background thread by retrofit
         BACKGROUND.submit {
             try {
-                // Make network request using a blocking call
-                val result = network.fetchNextTitle().execute()
+                // Make networkService request using a blocking call
+                val result = networkService.fetchNextTitle().execute()
                 if (result.isSuccessful) {
                     // Save it to database
                     titleDao.insertTitle(Title(result.body()!!))
@@ -66,6 +66,7 @@ class TitleRepository(val network: IMainNetwork, val titleDao: ITitleDao) {
                     // If it's not successful, inform the callback of the error
                     titleRefreshCallback.onError(TitleRefreshError("Unable to refresh title", null))
                 }
+
             } catch (cause: Throwable) {
                 // If anything throws an exception, inform the caller
                 titleRefreshCallback.onError(TitleRefreshError("Unable to refresh title", cause))
@@ -75,7 +76,7 @@ class TitleRepository(val network: IMainNetwork, val titleDao: ITitleDao) {
 
     //When you're done with this codelab, you will update this to use Retrofit and Room to fetch a new title and write it to the database using coroutines. For now, it'll just spend 500 milliseconds pretending to do work and then continue.
     suspend fun refreshTitle() {
-        // TODO: Refresh from network and write to database
+        // TODO: Refresh from networkService and write to database
         delay(500)
     }
 }

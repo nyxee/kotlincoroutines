@@ -29,7 +29,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 /**
- * Title represents the title fetched from the network
+ * Title represents the title fetched from the networkService
  */
 @Entity
 data class Title constructor(val title: String, @PrimaryKey val id: Int = 0)

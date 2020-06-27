@@ -25,15 +25,15 @@ import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 
 /**
- * Worker job to refresh titles from the network while the app is in the background.
+ * Worker job to refresh titles from the networkService while the app is in the background.
  *
  * WorkManager is a library used to enqueue work that is guaranteed to execute after its constraints
  * are met. It can run work even when the app is in the background, or not running.
  */
-class RefreshMainDataWork(context: Context, params: WorkerParameters, private val network: IMainNetwork) : CoroutineWorker(context, params) {
+class RefreshMainDataWork(context: Context, params: WorkerParameters, private val networkService: IMainNetworkService) : CoroutineWorker(context, params) {
 
     /**
-     * Refresh the title from the network using [TitleRepository]
+     * Refresh the title from the networkService using [TitleRepository]
      *
      * WorkManager will call this method from a background thread. It may be called even
      * after our app has been terminated by the operating system, in which case [WorkManager] will
@@ -43,9 +43,9 @@ class RefreshMainDataWork(context: Context, params: WorkerParameters, private va
         return Result.success()         // TODO: Use coroutines from WorkManager
     }
 
-    class Factory(val network: IMainNetwork = getNetworkService()) : WorkerFactory() {
+    class Factory(val networkService: IMainNetworkService = getNetworkService()) : WorkerFactory() {
         override fun createWorker(appContext: Context, workerClassName: String, workerParameters: WorkerParameters): ListenableWorker? {
-            return RefreshMainDataWork(appContext, workerParameters, network)
+            return RefreshMainDataWork(appContext, workerParameters, networkService)
         }
 
     }

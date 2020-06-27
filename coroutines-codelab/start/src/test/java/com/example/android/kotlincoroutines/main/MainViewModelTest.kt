@@ -17,7 +17,7 @@
 package com.example.android.kotlincoroutines.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.android.kotlincoroutines.fakes.IMainNetworkFake
+import com.example.android.kotlincoroutines.fakes.IMainNetworkServiceFake
 import com.example.android.kotlincoroutines.fakes.ITitleDaoFake
 import com.example.android.kotlincoroutines.main.utils.MainCoroutineScopeRule
 import org.junit.Before
@@ -36,7 +36,7 @@ class MainViewModelTest {
     fun setup() {
         subject = MainViewModel(
                 TitleRepository(
-                        IMainNetworkFake("OK"),
+                        IMainNetworkServiceFake("OK"),
                         ITitleDaoFake("initial")
                 ))
     }

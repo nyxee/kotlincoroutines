@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 /**
  * MainViewModel designed to store and manage UI-related data in a lifecycle conscious way. This
  * allows data to survive configuration changes such as screen rotations. In addition, background
- * work such as fetching network results can continue through configuration changes and deliver
+ * work such as fetching networkService results can continue through configuration changes and deliver
  * results after the new Fragment or Activity is available.
  *
  * @param repository the data source this ViewModel will fetch results from.

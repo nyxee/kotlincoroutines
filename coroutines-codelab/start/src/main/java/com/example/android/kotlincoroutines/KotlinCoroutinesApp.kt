@@ -42,7 +42,7 @@ class KotlinCoroutinesApp : Application() {
     }
 
     /**
-     * Setup WorkManager background job to 'fetch' new network data daily.
+     * Setup WorkManager background job to 'fetch' new networkService data daily.
      */
     private fun setupWorkManagerJob() {
         // initialize WorkManager with a Factory
@@ -52,7 +52,7 @@ class KotlinCoroutinesApp : Application() {
         WorkManager.initialize(this, workManagerConfiguration)
 
         // Use constraints to require the work only run when the device is charging and the
-        // network is unmetered
+        // networkService is unmetered
         val constraints = Constraints.Builder()
                 .setRequiresCharging(true)
                 .setRequiredNetworkType(UNMETERED)
