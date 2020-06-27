@@ -30,8 +30,7 @@ import androidx.work.WorkerParameters
  * WorkManager is a library used to enqueue work that is guaranteed to execute after its constraints
  * are met. It can run work even when the app is in the background, or not running.
  */
-class RefreshMainDataWork(context: Context, params: WorkerParameters, private val network: MainNetwork) :
-        CoroutineWorker(context, params) {
+class RefreshMainDataWork(context: Context, params: WorkerParameters, private val network: MainNetwork) : CoroutineWorker(context, params) {
 
     /**
      * Refresh the title from the network using [TitleRepository]

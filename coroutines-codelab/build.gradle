@@ -32,6 +32,7 @@ buildscript {
         def junit_version = '4.13'
         def lifecycle_version = '2.2.0'
         def arch_version = "2.1.0"
+        def viewModelScope = '2.3.0-alpha05'
 
         def livedata_version = '2.3.0-alpha05'
         def material_version = '1.1.0'
@@ -48,6 +49,9 @@ buildscript {
                 // Coroutines
                 "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_android_version",
                 "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_android_version",
+
+                // viewModelScope
+                "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelScope",
 
                 // Android UI and appcompat
                 "androidx.appcompat:appcompat:$appcompat_version",

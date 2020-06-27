@@ -30,7 +30,7 @@ import androidx.lifecycle.ViewModelProvider
  *
  * Use the generated factory:
  * ```
- * ViewModelProviders.of(this, FACTORY(argument))
+ * ViewModelProvider(this, FACTORY(argument))
  *
  * ```
  *
