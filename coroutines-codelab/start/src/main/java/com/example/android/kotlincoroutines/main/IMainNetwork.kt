@@ -23,26 +23,28 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
-private val service: MainNetwork by lazy {
+private val service: IMainNetwork by lazy {
     val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(SkipNetworkInterceptor())
             .build()
 
-    val retrofit = Retrofit.Builder()
+    val retrofit = Retrofit.Builder() //TODO: THIS SHOULD BE A SINGLETON.
             .baseUrl("http://localhost/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-    retrofit.create(MainNetwork::class.java)
+    retrofit.create(IMainNetwork::class.java)
 }
 
 fun getNetworkService() = service
 
 /**
  * Main network interface which will fetch a new welcome title for us
+ *
+ * MainNetwork implements a network API that fetches a new title. It uses Retrofit to fetch titles. Retrofit is configured to randomly return errors or mock data, but otherwise behaves as if it's making real network requests.
  */
-interface MainNetwork {
+interface IMainNetwork {
     @GET("next_title.json")
     fun fetchNextTitle(): Call<String>
 }

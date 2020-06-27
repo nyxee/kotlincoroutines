@@ -38,7 +38,7 @@ data class Title constructor(val title: String, @PrimaryKey val id: Int = 0)
  * Very small database that will hold one title
  */
 @Dao
-interface TitleDao {
+interface ITitleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTitle(title: Title)
 
@@ -51,7 +51,7 @@ interface TitleDao {
  */
 @Database(entities = [Title::class], version = 1, exportSchema = false)
 abstract class TitleDatabase : RoomDatabase() {
-    abstract val titleDao: TitleDao
+    abstract val titleDao: ITitleDao
 }
 
 private lateinit var INSTANCE: TitleDatabase
@@ -62,12 +62,7 @@ private lateinit var INSTANCE: TitleDatabase
 fun getDatabase(context: Context): TitleDatabase {
     synchronized(TitleDatabase::class) {
         if (!::INSTANCE.isInitialized) {
-            INSTANCE = Room
-                    .databaseBuilder(
-                            context.applicationContext,
-                            TitleDatabase::class.java,
-                            "titles_db"
-                    )
+            INSTANCE = Room.databaseBuilder(context.applicationContext, TitleDatabase::class.java, "titles_db")
                     .fallbackToDestructiveMigration()
                     .build()
         }

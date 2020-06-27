@@ -18,9 +18,9 @@ package com.example.android.kotlincoroutines.fakes
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.kotlincoroutines.main.MainNetwork
+import com.example.android.kotlincoroutines.main.IMainNetwork
 import com.example.android.kotlincoroutines.main.Title
-import com.example.android.kotlincoroutines.main.TitleDao
+import com.example.android.kotlincoroutines.main.ITitleDao
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
@@ -33,9 +33,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 /**
- * Fake [TitleDao] for use in tests.
+ * Fake [ITitleDao] for use in tests.
  */
-class TitleDaoFake(initialTitle: String) : TitleDao {
+class ITitleDaoFake(initialTitle: String) : ITitleDao {
     /**
      * A channel is a Coroutines based implementation of a blocking queue.
      *
@@ -89,16 +89,16 @@ class TitleDaoFake(initialTitle: String) : TitleDao {
 }
 
 /**
- * Testing Fake implementation of MainNetwork
+ * Testing Fake implementation of IMainNetwork
  */
-class MainNetworkFake(var result: String) : MainNetwork {
+class IMainNetworkFake(var result: String) : IMainNetwork {
     override fun fetchNextTitle() = MakeCompilerHappyForStarterCode() // TODO: replace with `result`
 }
 
 /**
- * Testing Fake for MainNetwork that lets you complete or error all current requests
+ * Testing Fake for IMainNetwork that lets you complete or error all current requests
  */
-class MainNetworkCompletableFake() : MainNetwork {
+class MainNetworkCompletableFake() : IMainNetwork {
     private var completable = CompletableDeferred<String>()
 
     override fun fetchNextTitle() = MakeCompilerHappyForStarterCode() // TODO: replace with `completable.await()`

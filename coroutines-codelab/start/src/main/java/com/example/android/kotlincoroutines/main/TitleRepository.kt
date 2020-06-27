@@ -19,7 +19,6 @@ package com.example.android.kotlincoroutines.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.android.kotlincoroutines.util.BACKGROUND
-import kotlinx.coroutines.delay
 
 /**
  * TitleRepository provides an interface to fetch a title or request a new one be generated.
@@ -29,7 +28,7 @@ import kotlinx.coroutines.delay
  * when data is updated. You can consider repositories to be mediators between different data
  * sources, in our case it mediates between a network API and an offline database cache.
  */
-class TitleRepository(val network: MainNetwork, val titleDao: TitleDao) {
+class TitleRepository(val network: IMainNetwork, val titleDao: ITitleDao) {
 
     /**
      * [LiveData] to load title.
@@ -51,7 +50,7 @@ class TitleRepository(val network: MainNetwork, val titleDao: TitleDao) {
      * This method does not return the new title. Use [TitleRepository.title] to observe
      * the current tile.
      */
-    fun refreshTitleWithCallbacks(titleRefreshCallback: TitleRefreshCallback) {
+    fun refreshTitleWithCallbacks(titleRefreshCallback: ITitleRefreshCallback) {
         // This request will be run on a background thread by retrofit
         BACKGROUND.submit {
             try {
@@ -82,7 +81,7 @@ class TitleRepository(val network: MainNetwork, val titleDao: TitleDao) {
  */
 class TitleRefreshError(message: String, cause: Throwable?) : Throwable(message, cause)
 
-interface TitleRefreshCallback {
+interface ITitleRefreshCallback {
     fun onCompleted()
     fun onError(cause: Throwable)
 }

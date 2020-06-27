@@ -25,6 +25,7 @@ import com.example.android.kotlincoroutines.main.utils.captureValues
 import com.example.android.kotlincoroutines.main.utils.getValueForTest
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -39,9 +40,12 @@ import retrofit2.Response
 @RunWith(JUnit4::class)
 class MainViewModelTest {
 
+    //InstantTaskExecutorRule is a JUnit rule that configures LiveData to execute each task synchronously
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    //MainCoroutineScopeRule is a custom rule in this codebase that configures Dispatchers.Main to use a TestCoroutineDispatcher from kotlinx-coroutines-test. This allows tests to advance a virtual-clock for testing, and allows code to use Dispatchers.Main in unit tests.
+    @ExperimentalCoroutinesApi
     @get:Rule
     val coroutineScope = MainCoroutineScopeRule()
 
@@ -59,9 +63,9 @@ class MainViewModelTest {
     @Test
     fun whenMainClicked_updatesTaps() {
         subject.onMainViewClicked()
-        Truth.assertThat(subject.taps.getValueForTest()).isEqualTo("0 taps")
+        assertThat(subject.taps.getValueForTest()).isEqualTo("0 taps")
         coroutineScope.advanceTimeBy(1000)
-        Truth.assertThat(subject.taps.getValueForTest()).isEqualTo("1 taps")
+        assertThat(subject.taps.getValueForTest()).isEqualTo("1 taps")
     }
 
     @Test
