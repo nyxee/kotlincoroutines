@@ -46,7 +46,7 @@ class ITitleDaoFake(initialTitle: String) : ITitleDao {
      */
     private val insertedForNext = Channel<Title>(capacity = Channel.BUFFERED)
 
-    override fun insertTitle(title: Title) {
+    override suspend fun insertTitle(title: Title) {
         insertedForNext.offer(title)
         _titleLiveData.value = title
     }
@@ -92,7 +92,7 @@ class ITitleDaoFake(initialTitle: String) : ITitleDao {
  * Testing Fake implementation of IMainNetworkService
  */
 class IMainNetworkServiceFake(var result: String) : IMainNetworkService {
-    override fun fetchNextTitle() = MakeCompilerHappyForStarterCode() // TODO: replace with `result`
+    override suspend fun fetchNextTitle() = result
 }
 
 /**
@@ -101,7 +101,7 @@ class IMainNetworkServiceFake(var result: String) : IMainNetworkService {
 class MainNetworkServiceCompletableFake() : IMainNetworkService {
     private var completable = CompletableDeferred<String>()
 
-    override fun fetchNextTitle() = MakeCompilerHappyForStarterCode() // TODO: replace with `completable.await()`
+    override suspend fun fetchNextTitle() = completable.await()
 
     fun sendCompletionToAllCurrentRequests(result: String) {
         completable.complete(result)
@@ -115,7 +115,7 @@ class MainNetworkServiceCompletableFake() : IMainNetworkService {
 
 }
 
-typealias MakeCompilerHappyForStarterCode = FakeCallForRetrofit<String>
+//typealias MakeCompilerHappyForStarterCode = FakeCallForRetrofit<String>
 
 /**
  * This class only exists to make the starter code compile. Remove after refactoring retrofit to use

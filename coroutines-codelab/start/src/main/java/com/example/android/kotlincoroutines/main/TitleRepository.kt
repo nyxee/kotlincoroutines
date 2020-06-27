@@ -56,20 +56,14 @@ class TitleRepository(val networkService: IMainNetworkService, val titleDao: ITi
         delay(500)
         // interact with *blocking* network and IO calls from a coroutine
         withContext(Dispatchers.IO) {
-            val result = try {
+            try {
                 // Make network request using a blocking call
-                networkService.fetchNextTitle().execute()
+                networkService.fetchNextTitle().also {
+                    titleDao.insertTitle(Title(it))
+                }
             } catch (cause: Throwable) {
                 // If the network throws an exception, inform the caller
                 throw TitleRefreshError("Unable to refresh title", cause)
-            }
-
-            if (result.isSuccessful) {
-                // Save it to database
-                titleDao.insertTitle(Title(result.body()!!))
-            } else {
-                // If it's not successful, inform the callback of the error
-                throw TitleRefreshError("Unable to refresh title", null)
             }
         }
     }
