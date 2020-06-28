@@ -19,10 +19,7 @@ package com.example.android.kotlincoroutines.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.android.kotlincoroutines.util.BACKGROUND
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 
 /**
  * TitleRepository provides an interface to fetch a title or request a new one be generated.
@@ -63,6 +60,25 @@ class TitleRepository(val networkService: IMainNetworkService, val titleDao: ITi
                 // If the network throws an exception, inform the caller
                 throw TitleRefreshError("Unable to refresh title", cause)
             }
+    }
+
+    /**
+     * This API is exposed for callers from the Java Programming language.
+     *
+     * The request will run unstructured, which means it won't be able to be cancelled.
+     *
+     * @param titleRefreshCallback a callback
+     */
+    fun refreshTitleInterop(titleRefreshCallback: ITitleRefreshCallback) {
+        val scope = CoroutineScope(Dispatchers.Default)
+        scope.launch {
+            try {
+                refreshTitle()
+                titleRefreshCallback.onCompleted()
+            } catch (throwable: Throwable) {
+                titleRefreshCallback.onError(throwable)
+            }
+        }
     }
 }
 
