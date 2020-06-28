@@ -19,8 +19,10 @@ package com.example.android.kotlincoroutines.main
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.android.kotlincoroutines.fakes.IMainNetworkServiceFake
 import com.example.android.kotlincoroutines.fakes.ITitleDaoFake
-import com.google.common.truth.Truth
+import com.example.android.kotlincoroutines.fakes.MainNetworkServiceCompletableFake
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
@@ -34,19 +36,23 @@ class TitleRepositoryTest {
     @Test
     fun whenRefreshTitleSuccess_insertsRows() = runBlockingTest {
         val titleDao = ITitleDaoFake("title")
-
-        val subject = TitleRepository(
-                IMainNetworkServiceFake("OK"),
-                titleDao)
+        val subject = TitleRepository(IMainNetworkServiceFake("OK"), titleDao)
 
         subject.refreshTitle()
-        Truth.assertThat(titleDao.nextInsertedOrNull()).isEqualTo("OK")
-
+        assertThat(titleDao.nextInsertedOrNull()).isEqualTo("OK")
     }
 
+    @ExperimentalCoroutinesApi
     @Test(expected = TitleRefreshError::class)
-    fun whenRefreshTitleTimeout_throws() {
-        // TODO: Write this test
-        throw TitleRefreshError("Remove this – made test pass in starter code", null)
+    fun whenRefreshTitleTimeout_throws() = runBlockingTest {
+        val network = MainNetworkServiceCompletableFake()
+        val subject = TitleRepository(network, ITitleDaoFake("title")
+        )
+
+        launch {
+            subject.refreshTitle()
+        }
+
+        advanceTimeBy(5_500)
     }
 }

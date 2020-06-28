@@ -22,6 +22,7 @@ import com.example.android.kotlincoroutines.util.BACKGROUND
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 /**
  * TitleRepository provides an interface to fetch a title or request a new one be generated.
@@ -52,20 +53,16 @@ class TitleRepository(val networkService: IMainNetworkService, val titleDao: ITi
      */
     //When you're done with this codelab, you will update this to use Retrofit and Room to fetch a new title and write it to the database using coroutines. For now, it'll just spend 500 milliseconds pretending to do work and then continue.
     suspend fun refreshTitle() {
-        // TODO: Refresh from networkService and write to database
-        delay(500)
-        // interact with *blocking* network and IO calls from a coroutine
-        withContext(Dispatchers.IO) {
             try {
                 // Make network request using a blocking call
-                networkService.fetchNextTitle().also {
-                    titleDao.insertTitle(Title(it))
+                val result = withTimeout(5_000) {
+                    networkService.fetchNextTitle()
                 }
+                titleDao.insertTitle(Title(result))
             } catch (cause: Throwable) {
                 // If the network throws an exception, inform the caller
                 throw TitleRefreshError("Unable to refresh title", cause)
             }
-        }
     }
 }
 
